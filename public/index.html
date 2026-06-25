@@ -31,6 +31,12 @@
         background: #eee;
         cursor: pointer;
       }
+      .messages li {
+        padding: 8px;
+        margin: 5px;
+        border-radius: 8px;
+        background-color: #f2f2f2;
+      }
     </style>
   </head>
   <body>
@@ -51,6 +57,13 @@
 
         const form = document.querySelector(".form");
 
+        const now = new Date();
+
+        const time =
+          String(now.getHours()).padStart(2, "0") +
+          ":" +
+          String(now.getMinutes()).padStart(2, "0");
+
         form.onsubmit = function (e) {
           e.preventDefault();
 
@@ -60,7 +73,10 @@
           ws.send(
             JSON.stringify({
               id: myId,
+
               text: text,
+
+              time: time,
             }),
           );
 
@@ -69,15 +85,15 @@
         };
 
         ws.onmessage = function (msg) {
-          const { id, text } = JSON.parse(msg.data);
+          const { id, text, time } = JSON.parse(msg.data);
 
           const messageList = document.querySelector(".messages");
           const li = document.createElement("li");
 
           if (id === myId) {
-            li.textContent = `(${id})自分: ${text}`;
+            li.textContent = `(${id})自分: ${text} [${time}]`;
           } else {
-            li.textContent = `${id}: ${text}`;
+            li.textContent = `${id}: ${text} [${time}]`;
           }
 
           messageList.appendChild(li);
